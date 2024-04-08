@@ -1,13 +1,16 @@
 import React, { useState,useContext } from 'react';
 import { Context } from './context';
 
-export function Button({event,handler}){
-    return <button onClick={handler}>{event}</button>
+export function Button({event,handler,styles}){
+    return <button style={{...styles}} onClick={handler}>{event}  </button>
 }
 
 export function DoubleButton({event0,event1}){
-    const {handler0,handler1,filled} = useContext(Context);
+    const {handler0,handler1,filled,} = useContext(Context);
+   
+
     function handleClick0(){
+        
         handler0();
     }
 

@@ -1,5 +1,6 @@
 .container {
 display: flex;
+background-color: #e7e8eb;
 flex-direction: column;
 align-items: center;
 justify-content: space-between;
@@ -31,6 +32,10 @@ align-items: center;
     display: flex;
     flex-direction:column ;
     width: 50%;
+}
+
+.inputing{
+    text-align: center;
 }
 .input > * {
     margin: 10px 0; 
@@ -95,4 +100,35 @@ button{
     border-top: 3px solid #ccc;
     position: relative;
     bottom: 0;
+  }
+  .no-column-flex{
+    display: flex;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+  }
+  .collapsed{
+    appearance: none;
+    background-color: #3e94cd;
+    border-radius: 40em;
+    border-style: none;
+    box-shadow: #103468 0 -12px 6px inset;
+    box-sizing: border-box;
+    color: #ede7e7;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: -.24px;
+    margin: 0;
+    outline: none;
+    padding: 1rem 1.3rem;
+    quotes: auto;
+    text-align: center;
+    text-decoration: none;
+    transition: all .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
   }
