@@ -28,7 +28,8 @@ async function searchVocab(word) {
   function App() {
 
     let initial ={
-      '单词': 'Hello /həˈloʊ/',
+      'word': 'hello',
+      '单词': 'hello /həˈloʊ/',
       '意思': 'greeting or salutation',
       '词族': ['greeting','salutation']
       }
@@ -42,19 +43,18 @@ async function searchVocab(word) {
    function handler0(){
 
     searchVocab(inputValue).then(async(data) => {
-      console.log(data)
-      let word = data?.[0]?.word ?? '没找到这个词✌️';
-      let meaning = data?.[0]?.meanings?.[0]?.definitions?.[0]?.definition ?? '没找到这个词✌️';
-      let synonyms = data?.[0]?.meanings?.[0]?.definitions?.[0]?.synonyms ?? '没找到这个词✌️';
+      console.log(data);
+
       const response = await ollama.chat({
         model: 'llama2',
-        messages: [{ role: 'user', content: `meaning of ${inputValue}`}],
+        messages: [{ role: 'assistant', content: `help me to learn this word ${inputValue}`}],
       })
+
       
       let newVocab = {
+        'word':inputValue,
         '单词': `${inputValue}  ${data?.[0]?.phonetics?.[0]?.text ?? '/no phonetics was found/'}`, 
         '解释': response.message.content,
-        '词族': synonyms
       }
       setVocabList([...vocabList,newVocab])
      
@@ -63,24 +63,37 @@ async function searchVocab(word) {
   }
 
   function handler1(){
-    console.log('Button clicked');
+    if (inputValue) {
+      console.log(vocabList.filter(para => para.word !== inputValue))
+      setVocabList(vocabList.filter(para => para.word !== inputValue));
+    } else {
+      setVocabList(vocabList.slice(0, -1));
+    }
+    setInputValue('');
   }
 
   
 
   return (
   <Context.Provider value={{handler0, handler1,filled}}>
-    <div> {
+    <div className='container'>
+    <div className='word-list'> {
       vocabList.map((key, index) => {
-        return <ul key={index}>
-          {Object.entries(key).map(([key, value], index) => <li key={index}>{`${key}: ${value}`}</li>)}
-        </ul>
-      })
-    } 
-    </div>
+            return (
+              <ul key={index}>
+                {Object.entries(key).map(([key, value], index) => {
+                  if (key !== 'word') {
+                    return <li key={index}>{`${key}: ${value}`}</li>;
+                  }
+                })}
+              </ul>
+            );
+          })}
+        
 
-    <div>
-      <p> {inputValue}</p>
+        <div>
+          <p> {inputValue}</p>
+        </div>
     </div>
     <InputWithButton id={inputid} value={inputValue}  type="text"  onChange={
       (e) =>{
@@ -88,9 +101,11 @@ async function searchVocab(word) {
        setFilled(e.target.value.length == 0);
     }
     }  />
-  
-  </Context.Provider>
+    <div className='footer'>© 2024 Albert. All rights reserved.</div>
     
+  
+   </div> 
+  </Context.Provider>
   );
 }
 

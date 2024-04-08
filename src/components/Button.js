@@ -5,8 +5,6 @@ export function Button({event,handler}){
     return <button onClick={handler}>{event}</button>
 }
 
-
-
 export function DoubleButton({event0,event1}){
     const {handler0,handler1,filled} = useContext(Context);
     function handleClick0(){
@@ -18,7 +16,7 @@ export function DoubleButton({event0,event1}){
     }
 
     return(
-    <div>
+    <div className='doubleButton'>
         <button onClick={handleClick0} disabled={filled} >{event0}</button>
         <button onClick={handleClick1} >{event1}</button>
     </div> );
