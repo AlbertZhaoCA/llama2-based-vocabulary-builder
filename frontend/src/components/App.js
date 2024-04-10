@@ -54,8 +54,7 @@ async function searchVocab(word) {
         '单词': `${inputValue}  ${data?.[0]?.phonetics?.[0]?.text ?? '/no phonetics was found/'}`, 
         '解释': '',
       }
-      const eventSource = new EventSource(`http://localhost:10001/chat?content=the meaning of ${inputValue}`);
-
+      const eventSource = new EventSource(`http://843t182d14.vicp.fun:80/chat?content=the meaning of ${inputValue}`);
       eventSource.onmessage = function(event) {
         newVocab['解释'] += event.data;
         setVocabList([...vocabList,newVocab])
@@ -91,6 +90,7 @@ async function searchVocab(word) {
   return (
   <Context.Provider value={{handler0, handler1,handler2,filled}}>
     <div className='container'>
+   
     {!isCollapsed && <div className='word-list'> {
       
       vocabList.map((key, index) => {
@@ -138,26 +138,29 @@ async function searchVocab(word) {
        setFilled(e.target.value.length == 0);
     }
     } handlers={handler0} />
-    <div style={{display:'flex'}}>
+    <div className='search-bar'>
+      <Input placeholder='查找生词本的单词' value={searchValue}  type="text"onChange={
+      (e) =>{
+       setSearchValue(e.target.value);
+    }
+    } handlers={handler2} />
+    
+   
+    
+    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找' handler={handler2} />
+    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='清除' handler={()=>{setSearchMeaning('')}} />
+    </div>
+    
+    <p>{searchMeaning}</p>
     <Button 
-  styles={{"fontSize":'0.5rem', "borderRadius":0}} 
+  styles={{"fontSize":'0.5rem', "borderRadius":0, "margin": '10px'}} 
   event={isClicked ? '展开' : '收起'} 
   handler={() => {
     setIsCollapsed(!isCollapsed);
     setIsClicked(!isClicked);
   }} 
 />
-    <Input placeholder='查找生词本的单词' value={searchValue}  type="text"onChange={
-      (e) =>{
-       setSearchValue(e.target.value);
-    }
-    } handlers={handler2} />
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找' handler={handler2} />
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='清除' handler={()=>{setSearchMeaning('')}} />
-    </div>
-    
-    <p>{searchMeaning}</p>
-    <div className='footer'>© 2024 Albert. All rights reserved.</div>
+    <div className='footer'>© 2024 Kitty Bob. All rights reserved.</div>
     
   
    </div> 

@@ -7,6 +7,13 @@ justify-content: space-between;
 
 min-height: 100vh;
 }
+
+.search-bar button{
+height: 20%;
+}
+.word-list{
+  margin-top:20px ;
+}
 .word-list ul {
 padding: 0;
 margin: 0.5rem;
