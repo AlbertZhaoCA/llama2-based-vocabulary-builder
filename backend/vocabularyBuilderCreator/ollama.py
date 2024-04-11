@@ -1,11 +1,31 @@
 import requests
 import json
-response = requests.post('http://localhost:11434/api/generate', json={
-    "model": "vocabCreator:latest",
-    "prompt": "我在学习daytime这个单词,请解释这个单词,给我发音,意思,用法,使用频率,词族和常见搭配,用json格式返回",
-    "format": "json",
-    "stream": False
-})
+from word_corpus import word_list
+from pymongo import MongoClient
 
-# Use json.dumps with indent parameter to pretty-print the JSON
-print(response.json())
+file = open('error_word', 'w')
+client = MongoClient('localhost', 27017)
+db = client['corpus']
+collection = db['words']
+
+collection = db['words']
+
+count = 0
+length = len(word_list)
+for word in word_list:
+    count += 1
+    try:
+        response = requests.post('http://localhost:11434/api/generate', json={
+            "model": "example",
+            "prompt": f"I am studying the word {word}. Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.",
+            "format": "json",
+            "stream": False
+        })
+        x = json.loads(response.text)
+        sent_json = x['response']
+        sent_json_obj = json.loads(sent_json)
+        collection.insert_one(sent_json_obj)
+    except Exception as e:
+        print(f"An error occurred with word {word}: {e}")
+        file.write(f"An error occurred with word {word}: {e}\n")
+    print(length - count)

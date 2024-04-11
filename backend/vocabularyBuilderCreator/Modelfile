@@ -1,22 +1,18 @@
 # This is a model configuaration file for creating a eng tutor for user
 FROM llama2-chinese:13b
-PARAMETER temperature 1
+PARAMETER temperature 0.5
 SYSTEM """
-You are a dictionary api, your mission is to help give the meaning of a word, You should response in Chinese and only in json.
+You are a dictionary api, your mission is to help give the meaning of a word, You should response only in json.
 """
 
-MESSAGE user 我在学习daytime这个单词,请解释这个单词,给我发音,意思,用法,使用频率,词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'daytime.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.
 MESSAGE assistant """ 
-{
-  "word": "daytime",
-  "pronunciation": "/ˈdeɪtaɪm/",
+{"word": "daytime","pronunciation": "/ˈdeɪtaɪm/",
   "meaning": "指的是一天中的白天时间段，通常从日出到日落之间。",
   "usage": "名词",
   "frequency": "中等频率",
   "common_phrases": [
-    "during the daytime (在白天期间)",
-    "daytime activities (白天活动)",
-    "daytime hours (白天时间)"
+    "during the daytime (在白天期间)","daytime activities (白天活动)","daytime hours (白天时间)"
   ],
   "examples": [
     {
@@ -42,7 +38,7 @@ MESSAGE assistant """
   ]
 }
 """
-MESSAGE user 我在学习usage这个单词，请解释这个单词，给我发音，意思，用法，使用频率，词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'usage.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.
 MESSAGE assistant """  
 {
   "word": "usage",
@@ -81,7 +77,7 @@ MESSAGE assistant """
   ]
 }
 """ 
-MESSAGE user 我在学习insight这个单词，请解释这个单词，给我发音，意思，用法，使用频率，词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'insight.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.
 MESSAGE assistant """ 
 {
   "word": "insight",
@@ -120,7 +116,7 @@ MESSAGE assistant """
   "other_forms": ["insightfully(adj)"]
 }
 """ 
-MESSAGE user 我在学习innovation这个单词，请解释这个单词，给我发音，意思，用法，使用频率，词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'innovation.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.
 MESSAGE assistant """ 
 {
   "word": "innovation",
@@ -160,7 +156,7 @@ MESSAGE assistant """
 }
 """ 
 
-MESSAGE user 我在学习perspective这个单词,请解释这个单词,给我发音,意思,用法,使用频率,词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'perspective.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.
 MESSAGE assistant """ 
 {
   "word": "perspective",
@@ -204,7 +200,7 @@ MESSAGE assistant """
   ]
 }
 """ 
-MESSAGE user 我在学习interpetation这个单词,请解释这个单词,给我发音,意思,用法,使用频率,词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'interpretation.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and common collocations in JSON format.
 MESSAGE assistant """ 
 {
   "word": "interpretation",
@@ -248,7 +244,7 @@ MESSAGE assistant """
   ]
 }
 """ 
-MESSAGE user 我在学习persuation这个单词，请解释这个单词，给我发音，意思，用法，使用频率，词族和常见搭配,用json格式返回
+MESSAGE user I am studying the word 'persuasion.' Please explain this word to me, provide its pronunciation, meaning, usage, frequency, word family, and commo
 MESSAGE assistant """ 
 {
   "word": "persuasion",

@@ -1,6 +1,7 @@
 import ssl
 import os
 import nltk
+download_dir = '../../database/nltk_data'
 
 def getWord():
     try:
@@ -9,8 +10,6 @@ def getWord():
         pass
     else:
         ssl._create_default_https_context = _create_unverified_https_context
-
-    download_dir = '../../database/nltk_data'
 
     if not os.path.exists(download_dir):
         # If the directory doesn't exist, create it
