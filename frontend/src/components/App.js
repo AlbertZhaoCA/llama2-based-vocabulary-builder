@@ -78,7 +78,7 @@ async function searchVocab(word) {
                 }    
                 
                 const text = new TextDecoder("utf-8").decode(value);
-                const cleanedText = text.replace(/data: /g, '');
+                const cleanedText = text.replace(/data: /g, '').trim();
 
                 newVocab['解释'] += cleanedText;
                 setVocabList([...vocabList,newVocab])
