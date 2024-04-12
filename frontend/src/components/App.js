@@ -54,7 +54,7 @@ async function searchVocab(word) {
         '单词': `${inputValue}  ${data?.[0]?.phonetics?.[0]?.text ?? '/no phonetics was found/'}`, 
         '解释': '',
       }
-      const eventSource = new EventSource(`http://843t182d14.vicp.fun:80/chat?content=the meaning of ${inputValue}`);
+      const eventSource = new EventSource(`http://localhost:10001/chat?content=the meaning of ${inputValue}`);
       eventSource.onmessage = function(event) {
         newVocab['解释'] += event.data;
         setVocabList([...vocabList,newVocab])
@@ -98,7 +98,7 @@ async function searchVocab(word) {
               <ul key={index}>
                 {Object.entries(key).map(([key, value], index) => {
                   if (key !== 'word') {
-                    return <li key={index}>{`${key}: ${value}`}</li>;
+                    return <li key={`${key}-${index}`}>{`${key}: ${value}`}</li>;
                   }
                 })}
               </ul>

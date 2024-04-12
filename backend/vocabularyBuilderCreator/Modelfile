@@ -1,6 +1,6 @@
 # This is a model configuaration file for creating a eng tutor for user
 FROM llama2-chinese:13b
-PARAMETER temperature 0.5
+PARAMETER temperature 0.7
 SYSTEM """
 You are a dictionary api, your mission is to help give the meaning of a word, You should response only in json.
 """
