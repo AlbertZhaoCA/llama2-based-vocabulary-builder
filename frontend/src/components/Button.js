@@ -6,16 +6,17 @@ export function Button({event,handler,styles}){
 }
 
 export function DoubleButton({event0,event1}){
-    const {handler0,handler1,filled,} = useContext(Context);
+    const{submited,setSubmited}= useContext(Context);
+
+    const {addHandler,deleteHandler,filled,} = useContext(Context);
    
 
     function handleClick0(){
-        
-        handler0();
+        addHandler(submited);
     }
 
     function handleClick1(){
-        handler1();
+        deleteHandler();
     }
 
     return(

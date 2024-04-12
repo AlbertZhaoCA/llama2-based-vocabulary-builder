@@ -3,11 +3,11 @@ import '../App.css';
 import { InputWithButton,Input } from './Input';
 import { Context } from './context';
 import { Button } from './Button';
-
+import  Dived  from './divideWords';
 
 async function searchVocab(word) {
   try {
-   
+    console.log(word);
     let resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
     if (!resp.ok) {
       if (resp.status === 404) {
@@ -28,9 +28,10 @@ async function searchVocab(word) {
   function App() {
 
     let initial ={
-      'word': 'hello',
-      '单词': 'hello /həˈloʊ/',
-      '解释': 'greeting or salutation',
+      'word': 'example',
+      '单词': ' example /ɪg\'zæmpl/',
+      '解释': '这是一个小小的🌰,希望你查到最合适的解释',
+      '背景': 'For example, if you give us the context, we will show you here',
       }
 
   const [vocabList,setVocabList] = useState([initial]);
@@ -40,33 +41,68 @@ async function searchVocab(word) {
   const [searchMeaning,setSearchMeaning] = useState('');
   const [isCollapsed,setIsCollapsed] = useState(false);
   const [isClicked,setIsClicked] = useState(false);
+  const [submited,setSubmited] = useState({});
 
 
 
-   function handler0(){
+   async function addHandler({word,sentence=inputValue}){
+    
+    let newVocab = {
+      'word':word,
+      '单词': '', 
+      '解释': '',
+      '背景': sentence?sentence:'',
+    }
 
-    searchVocab(inputValue).then((data) => {
-      console.log(data);
-
-      
-      let newVocab = {
-        'word':inputValue,
-        '单词': `${inputValue}  ${data?.[0]?.phonetics?.[0]?.text ?? '/no phonetics was found/'}`, 
-        '解释': '',
-      }
-      const eventSource = new EventSource(`http://843t182d14.vicp.fun:80/chat?content=the meaning of ${inputValue}`);
-      eventSource.onmessage = function(event) {
-        newVocab['解释'] += event.data;
-        setVocabList([...vocabList,newVocab])
-      }
-      console.log(vocabList.length);
-      
+    searchVocab(word).then((responseData) => {
+      console.log(responseData);
+      newVocab['单词'] = `${word}  ${responseData?.[0]?.phonetics?.[0]?.text ?? ''}`;
      
-    })
-    setInputValue('');
-  }
+    }); 
+    const data = { word: word, sentence: sentence};
+      await fetch('http://localhost:10001/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }).then(response => {
+        const reader = response.body.getReader();
+        return new ReadableStream({
+          start(controller) {
+            function push() {
+              reader.read().then(({ done, value }) => {
+                if (done) {
+                  controller.close();
+                  return;
+                }    
+                
+                const text = new TextDecoder("utf-8").decode(value);
+                const cleanedText = text.replace(/data: /g, '');
 
-  function handler1(){
+                newVocab['解释'] += cleanedText;
+                setVocabList([...vocabList,newVocab])
+                
+                push();
+              });
+            }
+            push();
+          }
+        });
+      })
+      .then(stream => {
+        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+      })
+      .then(result => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+      setInputValue('');
+   
+    }
+  function deleteHandler(){
     if (inputValue) {
       console.log(vocabList.filter(para => para.word !== inputValue))
       setVocabList(vocabList.filter(para => para.word !== inputValue));
@@ -76,7 +112,7 @@ async function searchVocab(word) {
     setInputValue('');
   }
 
-  function handler2(){
+  function searchHandler(){
     vocabList.map((key, index) => {
       if (key.word === searchValue) {
         console.log(key['解释']);
@@ -84,11 +120,18 @@ async function searchVocab(word) {
         }
         setSearchValue('');
     })
+    
   }
+
+  function handleWordClick(word) {
+    setSubmited({word: word,sentence: inputValue});
+    console.log('clicked');
+}
 
 
   return (
-  <Context.Provider value={{handler0, handler1,handler2,filled}}>
+  <Context.Provider value={{addHandler, deleteHandler,searchHandler,
+  filled,inputValue,submited,setSubmited}}>
     <div className='container'>
    
     {!isCollapsed && <div className='word-list'> {
@@ -103,11 +146,11 @@ async function searchVocab(word) {
                 })}
               </ul>
             );
-          })}
-        
+          })
+          }  
 
         <div className='inputing'>
-          <p> {inputValue}</p>
+          <Dived str={inputValue} onWordClick={handleWordClick} />
         </div>
     </div>
     }
@@ -128,7 +171,7 @@ async function searchVocab(word) {
         
 
         <div className='inputing'>
-          <p> {inputValue} </p>
+        <Dived str={inputValue} onWordClick={handleWordClick} />
         </div>
     </div>
     }
@@ -137,17 +180,17 @@ async function searchVocab(word) {
        setInputValue(e.target.value);
        setFilled(e.target.value.length == 0);
     }
-    } handlers={handler0} />
+    } handlers={addHandler} />
     <div className='search-bar'>
       <Input placeholder='查找生词本的单词' value={searchValue}  type="text"onChange={
       (e) =>{
        setSearchValue(e.target.value);
     }
-    } handlers={handler2} />
+    } handlers={searchHandler} />
     
    
     
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找' handler={handler2} />
+    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找' handler={searchHandler} />
     <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='清除' handler={()=>{setSearchMeaning('')}} />
     </div>
     
@@ -169,3 +212,4 @@ async function searchVocab(word) {
 }
 
 export default App;
+  

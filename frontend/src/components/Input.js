@@ -1,9 +1,10 @@
 import { Button, DoubleButton } from "./Button";
-import { Context } from "./context";
 import { useState } from "react";
+import { Context } from "./context";
+import { useContext } from "react";
 
-
-export function Input({ value,type,onChange,placeholder='回车也可以查找',handlers }) {
+export function Input({value,type,onChange,placeholder='回车也可以查找',handlers}) {
+  const{submited,setSubmited} = useContext(Context);
   const [isFocused,setIsFocused] = useState(false);
   
   const handleOnFocus = () => { 
@@ -17,7 +18,7 @@ const handleBlur = () => {
     <input  placeholder={placeholder} value={value} type={type} onChange={onChange} 
     onKeyDown={(e)=>{
         if(e.key==='Enter'&&isFocused) 
-        handlers();
+        handlers(submited);
       }
     } onFocus={handleOnFocus} 
       onBlur={handleBlur} />
