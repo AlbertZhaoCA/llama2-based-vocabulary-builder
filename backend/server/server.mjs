@@ -1,9 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import ollama from 'ollama';
+import { config } from 'dotenv';
 
 const app = express();
 app.use(cors());
+
+
 
 app.get('/chat', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
