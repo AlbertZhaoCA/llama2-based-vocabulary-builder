@@ -50,7 +50,7 @@ import { useEffect } from 'react';
       }
 
       const data = { word: word, sentence: sentence };
-      const response = await fetch('http://localhost:10001/chat', {
+      const response = await fetch('https://843t182d14.vicp.fun:443/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
