@@ -14,7 +14,7 @@ import { useEffect } from 'react';
       'word': 'example',
       '单词': ' example /ɪg\'zæmpl/',
       '解释': '这是一个小小的🌰,希望你查到最合适的解释',
-      '背景': 'For example, if you give us the context, we will show you here',
+      '背景': 'For 👉example(在回显区点击你要查的单词,我们会给你单词在语境里的意思,也可以直接查询句子，但这样你不能在生词本里进行查找), if you give us the context, we will show you here',
       }
 
   const [vocabList,setVocabList] = useState(JSON.parse(localStorage.getItem('vocabList')) || [initial]);
@@ -197,15 +197,15 @@ import { useEffect } from 'react';
     }
     }  
     />
-        <Button  event='查'  />
-        <Button  event='清查找' handler={()=>{setSearchMeaning('')}} />
+        <Button  event='🔍'  />
+        <Button  event='🧹' handler={()=>{setSearchMeaning('')}} />
 
     </form>
 
     </div>
    
   <Button 
-  event={isClicked ? '展' : '收'} 
+  event={isClicked ? '📕' : '📖'} 
   handler={() => {
     setIsCollapsed(!isCollapsed);
     setIsClicked(!isClicked);

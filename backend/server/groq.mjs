@@ -38,7 +38,7 @@ async function getGroqChatStream(json){
                     ? `${json.word}在 ${json.sentence} 中什么意思，如何理解，还有其他用法吗，你能给出这个句子中其他比较重要的单词和意思吗。请使用中文`
                     : json?.word
                     ? `${json.word}是什么意思，他如何发音，意思是什么，是否常见，给出对应词族和一些应用场景。请使用中文`
-                    : json?.sentence ? `${json.sentence}是什么意思,提取出里面比较难的单词`: (() => {
+                    : json?.sentence ? `${json.sentence}是什么意思,提取出里面比较难的单词，请使用中文`: (() => {
                           throw new Error('Invalid input');
                       })()
             }

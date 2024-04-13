@@ -24,7 +24,7 @@ return (
 
     <div style={{display:"flex",flexDirection:"row"}}>
         <Input placeholder="请输入单词..." type={type} value={value} onChange={onChange} />
-        <DoubleButton handler={handler}  event0='查' event1='删' />
+        <DoubleButton handler={handler}  event0='🔍' event1='🧹' />
     </div>
   );
 }
