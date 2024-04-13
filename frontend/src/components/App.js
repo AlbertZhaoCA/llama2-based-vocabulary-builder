@@ -45,22 +45,25 @@ async function searchVocab(word) {
 
 
 
-   async function addHandler({word,sentence=inputValue}){
-    
-    let newVocab = {
-      'word':word,
-      '单词': '', 
-      '解释': '',
-      '背景': sentence?sentence:'',
-    }
+  async function addHandler(e,{word,sentence=inputValue}) {
+    try {
+      e.preventDefault();
+  
+      let newVocab = {
+        'word':word,
+        '单词': '', 
+        '解释': '',
+        '背景': sentence ? sentence : '',
+      };
+  
+      if (word) {
+        newVocab['单词'] = word;
+      } else {
+        newVocab['单词'] = sentence.slice(4);
+      }
 
-    searchVocab(word).then((responseData) => {
-      console.log(responseData);
-      newVocab['单词'] = `${word}  ${responseData?.[0]?.phonetics?.[0]?.text ?? ''}`;
-     
-    }); 
-    const data = { word: word, sentence: sentence};
-      await fetch('http://localhost:10001/chat', {
+      const data = { word: word, sentence: sentence };
+      const response = await fetch('http://localhost:10001/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +81,7 @@ async function searchVocab(word) {
                 }    
                 
                 const text = new TextDecoder("utf-8").decode(value);
-                const cleanedText = text.replace(/data: /g, '').trim();
+                const cleanedText = text.replace(/(data: .*?)\s*(?=data:|$)/g, '$1').replace(/data: /g, '');    
 
                 newVocab['解释'] += cleanedText;
                 setVocabList([...vocabList,newVocab])
@@ -101,8 +104,15 @@ async function searchVocab(word) {
       });
       setInputValue('');
    
+    }catch(error){
+      console.error('Error:', error);
     }
-  function deleteHandler(){
+  }
+  
+  function deleteHandler(e){
+    try {
+      e.preventDefault();
+
     if (inputValue) {
       console.log(vocabList.filter(para => para.word !== inputValue))
       setVocabList(vocabList.filter(para => para.word !== inputValue));
@@ -111,16 +121,26 @@ async function searchVocab(word) {
     }
     setInputValue('');
   }
+    catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-  function searchHandler(){
-    vocabList.map((key, index) => {
+  function searchHandler(e){
+    try{
+      e.preventDefault();
+
+    vocabList.map((key) => {
       if (key.word === searchValue) {
         console.log(key['解释']);
         setSearchMeaning(key['解释'])    
         }
         setSearchValue('');
     })
-    
+  }
+  catch (error) {
+    console.error('Error:', error);
+  }
   }
 
   function handleWordClick(word) {
@@ -168,44 +188,47 @@ async function searchVocab(word) {
           })
           }
           
-        
-
         <div className='inputing'>
         <Dived str={inputValue} onWordClick={handleWordClick} />
         </div>
     </div>
     }
+    <form onSubmit={e=>{addHandler(e,submited)}}>
     <InputWithButton  value={inputValue}  type="text"  onChange={
       (e) =>{
        setInputValue(e.target.value);
        setFilled(e.target.value.length == 0);
     }
-    } handlers={addHandler} />
+    } />
+    </form>
+   
     <div className='search-bar'>
-      <Input placeholder='查找生词本的单词' value={searchValue}  type="text"onChange={
+
+    <form onSubmit={(e)=>searchHandler(e)}>
+      <Input placeholder='查找生词本的单词' value={searchValue}  type="text" onChange={
       (e) =>{
        setSearchValue(e.target.value);
     }
-    } handlers={searchHandler} />
-    
-   
-    
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找' handler={searchHandler} />
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='清除' handler={()=>{setSearchMeaning('')}} />
+    }  />
+    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找'  />
+    </form>
+
+    <form onSubmit={e=>deleteHandler(e)}>
+    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='清除' />
+    </form>
     </div>
-    
-    <p>{searchMeaning}</p>
-    <Button 
+   
+  <Button 
   styles={{"fontSize":'0.5rem', "borderRadius":0, "margin": '10px'}} 
   event={isClicked ? '展开' : '收起'} 
   handler={() => {
     setIsCollapsed(!isCollapsed);
     setIsClicked(!isClicked);
   }} 
-/>
-    <div className='footer'>© 2024 Kitty Bob. All rights reserved.</div>
+/> 
+<p>{searchMeaning}</p>
+ <div className='footer'>© 2024 Kitty Bob. All rights reserved.</div>
     
-  
    </div> 
   </Context.Provider>
   );

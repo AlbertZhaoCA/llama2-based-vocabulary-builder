@@ -14,8 +14,6 @@ export async function agent(json,req,res) {
         // Print the completion returned by the LLM.
         res.write(`data: ${chunk.choices[0]?.delta?.content||""}\n\n`);
         process.stdout.write(chunk.choices[0]?.delta?.content||"");
-
-
         }
 
 

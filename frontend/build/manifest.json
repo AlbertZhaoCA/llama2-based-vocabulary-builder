@@ -3,7 +3,7 @@
   "name": "Kitty Bob Vocabulary Builder ",
   "icons": [
     {
-      "src": "../src/kitty.ico",
+      "src": "../public/dic.ico",
       "sizes": "16x16",
       "type": "image/x-icon"
     }
