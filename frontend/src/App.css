@@ -31,13 +31,16 @@ input:focus {
 .searchBar{
   margin-top: auto;
   display:flex;
-  gap: 400px;
+  gap: 350px;
   justify-content: space-between;
 }
 .wordAndSentence{
   height: 30%;
   flex-grow: 2;
 }
+
+ 
+
 
 .word-list{
   margin-top:20px ;
@@ -119,10 +122,13 @@ button{
     transform: scale(1.025);
   }
   
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     button {
       font-size: 1.5rem;
       padding: .75rem 2rem;
+    }
+    .searchBar {
+      gap:0
     }
   }
 

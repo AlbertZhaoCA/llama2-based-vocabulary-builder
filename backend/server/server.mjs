@@ -26,7 +26,7 @@ app.post('/chat',(req, res) => {
   console.log(userContent);
   console.log("\n\n\n\n");
   agent(userContent, req, res);}catch(error){
-    console.error('Ejkhlkjhjkljk hk hjkhlkj hj:');
+    console.error(`${error}`);
   }
 });
 
