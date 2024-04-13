@@ -4,28 +4,11 @@ import { InputWithButton,Input } from './Input';
 import { Context } from './context';
 import { Button } from './Button';
 import  Dived  from './divideWords';
+import { useEffect } from 'react';
 
-async function searchVocab(word) {
-  try {
-    console.log(word);
-    let resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    if (!resp.ok) {
-      if (resp.status === 404) {
-        throw new Error('Word not found in the dictionary');
-      }
-      let error = await resp.text();
-      throw new Error(error);
-    }
-    let data = await resp.json();
-
-    return data;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-}
 
   function App() {
+    
 
     let initial ={
       'word': 'example',
@@ -34,15 +17,19 @@ async function searchVocab(word) {
       '背景': 'For example, if you give us the context, we will show you here',
       }
 
-  const [vocabList,setVocabList] = useState([initial]);
+  const [vocabList,setVocabList] = useState(JSON.parse(localStorage.getItem('vocabList')) || [initial]);
   const [inputValue,setInputValue] = useState('');
   const [filled,setFilled] = useState(true);
   const [searchValue,setSearchValue] = useState('');
   const [searchMeaning,setSearchMeaning] = useState('');
-  const [isCollapsed,setIsCollapsed] = useState(false);
+  const [isCollapsed,setIsCollapsed] = useState(JSON.parse(localStorage.getItem('isCollapsed')) || false);
   const [isClicked,setIsClicked] = useState(false);
   const [submited,setSubmited] = useState({});
-
+  
+  useEffect(() => {
+    localStorage.setItem('vocabList', JSON.stringify(vocabList));
+    localStorage.setItem('isCollapsed', JSON.stringify(isCollapsed));
+  }, [vocabList, isCollapsed]);
 
 
   async function addHandler(e,{word,sentence=inputValue}) {
@@ -76,6 +63,7 @@ async function searchVocab(word) {
             function push() {
               reader.read().then(({ done, value }) => {
                 if (done) {
+                  setInputValue('');
                   controller.close();
                   return;
                 }    
@@ -102,7 +90,6 @@ async function searchVocab(word) {
       .catch((error) => {
         console.error('Error:', error);
       });
-      setInputValue('');
    
     }catch(error){
       console.error('Error:', error);
@@ -193,34 +180,32 @@ async function searchVocab(word) {
         </div>
     </div>
     }
-    <form onSubmit={e=>{addHandler(e,submited)}}>
-    <InputWithButton  value={inputValue}  type="text"  onChange={
+   
+    <div className='searchBar'>
+    <form className="wordAndSentence"onSubmit={e=>{addHandler(e,submited)}}>
+    <InputWithButton handler={deleteHandler} value={inputValue}  type="text"  onChange={
       (e) =>{
        setInputValue(e.target.value);
        setFilled(e.target.value.length == 0);
     }
     } />
     </form>
-   
-    <div className='search-bar'>
-
-    <form onSubmit={(e)=>searchHandler(e)}>
+    <form className="searchWord"onSubmit={(e)=>searchHandler(e)}>
       <Input placeholder='查找生词本的单词' value={searchValue}  type="text" onChange={
       (e) =>{
        setSearchValue(e.target.value);
     }
-    }  />
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='查找'  />
+    }  
+    />
+        <Button  event='查'  />
+        <Button  event='清查找' handler={()=>{setSearchMeaning('')}} />
+
     </form>
 
-    <form onSubmit={e=>deleteHandler(e)}>
-    <Button styles={{"fontSize":'0.5rem',"borderRadius":0}} event='清除' />
-    </form>
     </div>
    
   <Button 
-  styles={{"fontSize":'0.5rem', "borderRadius":0, "margin": '10px'}} 
-  event={isClicked ? '展开' : '收起'} 
+  event={isClicked ? '展' : '收'} 
   handler={() => {
     setIsCollapsed(!isCollapsed);
     setIsClicked(!isClicked);

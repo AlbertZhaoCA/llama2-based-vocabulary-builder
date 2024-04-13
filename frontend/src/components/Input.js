@@ -19,12 +19,12 @@ const handleBlur = () => {
   );
 }
 
-export function InputWithButton({ type, value, onChange}) {
+export function InputWithButton({ type, value, onChange,handler}) {
 return (
 
-    <div className="input">
+    <div style={{display:"flex",flexDirection:"row"}}>
         <Input placeholder="请输入单词..." type={type} value={value} onChange={onChange} />
-        <DoubleButton  event0='查找' event1='删除' />
+        <DoubleButton handler={handler}  event0='查' event1='删' />
     </div>
   );
 }
