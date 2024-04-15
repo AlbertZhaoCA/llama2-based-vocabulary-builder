@@ -161,11 +161,11 @@ import Load from './Load';
 
   return (
 
-  <Context.Provider value={{addHandler, deleteHandler,searchHandler,
+  <Context.Provider value={{handleWordClick,addHandler, deleteHandler,searchHandler,
   inputValue,submited,setSubmited}}>
     <div className='container'>
 
-    <button onClick={() => {localStorage.clear();window.location.reload();}}>
+    <button className='longerButton' onClick={() => {localStorage.clear();window.location.reload();}}>
     重新加载
     </button>
    
@@ -174,9 +174,7 @@ import Load from './Load';
                
          }
 
-        <div className='inputing'>
-          <Dived str={inputValue} onWordClick={handleWordClick} />
-        </div>
+
     </div>
     }
      {isCollapsed && <div className=''> {
@@ -193,15 +191,13 @@ import Load from './Load';
           })
           }
           
-        <div className='inputing'>
-        <Dived str={inputValue} onWordClick={handleWordClick} />
-        </div>
+      
     </div>
     }    {normalResponse ? <Load /> : null}
 
     <div className='searchBar'>
     <form className="wordAndSentence"onSubmit={e=>{addHandler(e,submited)}}>
-    <InputWithButton  filled={filled0} handler={deleteHandler} value={inputValue}  type="text"  onChange={
+    <InputWithButton showdivide={true}  filled={filled0} handler={deleteHandler} value={inputValue}  type="text"  onChange={
       (e) =>{
        setInputValue(e.target.value);
        setFilled0(e.target.value.length == 0);      
@@ -210,7 +206,7 @@ import Load from './Load';
     </form>
 
     <form className="searchWord" onSubmit={(e)=>searchHandler(e)}>
-      <InputWithButton filled={filled1} handler={()=>{setSearchMeaning("")}} placeholder='查找生词本的单词' value={searchValue}  type="text" onChange={
+      <InputWithButton showdivide={false} filled={filled1} handler={()=>{setSearchMeaning("")}} placeholder='查找生词本的单词' value={searchValue}  type="text" onChange={
       (e) =>{
        setSearchValue(e.target.value);
        setFilled1(e.target.value.length == 0);     

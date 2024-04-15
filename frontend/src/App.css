@@ -8,6 +8,28 @@
   min-height: 100vh;
   min-width: 100vw;
 }
+@media screen and (max-width: 600px) {
+  button {
+    height: 55px;
+    width: 80px;
+  }
+  .longerButton{
+    width: 400px;
+  }
+
+  
+}
+@media screen and (max-width: 400px) {
+  button {
+    height: 55px;
+    width: 80px;
+  }
+  .longerButton{
+    width: 300px;
+  }
+
+  
+}
 
 input {
   padding: 4px;
