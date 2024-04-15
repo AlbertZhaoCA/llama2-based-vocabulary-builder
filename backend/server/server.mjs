@@ -34,6 +34,36 @@ app.listen(10001, () => {
   console.log('HTTPS Server is running on port 10001');
 });
 
+process.on('SIGINT', (err, origin) => {
+  console.log('SIGINT received');
+  process.exit(0);
+});
+
+await fetch('https://localhost:10001/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({word: 'hello', sentence: 'hello world'}),
+  
+}).then(response => {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  reader.read().then(function processText({ done, value }) {
+    if (done) {
+      console.log('Stream complete');
+      return;
+    }
+    console.log(decoder.decode(value, { stream: true }));
+    return reader.read().then(processText);
+  });
+})
+g
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', reason.stack || reason);
+  
+})
+
 
 
 
