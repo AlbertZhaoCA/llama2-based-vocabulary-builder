@@ -5,7 +5,8 @@ import { Context } from './context';
 import { Button } from './Button';
 import  Dived  from './divideWords';
 import { useEffect } from 'react';
-
+import Card from './Card';
+import Load from './Load';
 
   function App() {
     
@@ -19,7 +20,8 @@ import { useEffect } from 'react';
 
   const [vocabList,setVocabList] = useState(JSON.parse(localStorage.getItem('vocabList')) || [initial]);
   const [inputValue,setInputValue] = useState('');
-  const [filled,setFilled] = useState(true);
+  const [filled0,setFilled0] = useState(true);
+  const [filled1,setFilled1] = useState(true);
   const [searchValue,setSearchValue] = useState('');//for searching added words in word list
   const [searchMeaning,setSearchMeaning] = useState('');//for showing the meaning of the searched word
   const [isCollapsed,setIsCollapsed] = useState(JSON.parse(localStorage.getItem('isCollapsed')) || false);//fold the word list
@@ -33,13 +35,17 @@ import { useEffect } from 'react';
     localStorage.setItem('isCollapsed', JSON.stringify(isCollapsed));
   }, [vocabList, isCollapsed]);
 
+ 
+  
 
   async function addHandler(e,{word,sentence=inputValue}) {
+    setNormalResponse(true);
     try {
+
       e.preventDefault();
   
       let newVocab = {
-        'word':word,
+        'word': word,
         '单词': '', 
         '解释': '',
         '背景': sentence ? sentence : '',
@@ -60,6 +66,7 @@ import { useEffect } from 'react';
         body: JSON.stringify(data),
       }).then(response => {
         setNormalResponse(true);
+
         const reader = response.body.getReader();
         return new ReadableStream({
           start(controller) {
@@ -84,25 +91,23 @@ import { useEffect } from 'react';
           }
         });
       })
-      .then(stream => {
-        setNormalResponse(false);
-      })
       .then(result => {
+        setNormalResponse(false);
         console.log(result);
       })
       .catch((error) => {
-        console.error('Error:', error);
-        error.message.includes('NetworkError')
-        &&alert('Oops, 服务器走神了，请稍后再试');
+        error.message.includes('Failed to fetch')
+        && alert('Oops🥹, 服务器走神了，请稍后再试');
       });
    
     }catch(error){
       console.error('Error:', error);
       error.message.includes('NetworkError')&&
-      alert('Oops, 网络好像有点不太正常，请稍后再试');
+      alert('Oops, 网络好像有点不太正常🐌，请稍后再试');
     }
   }
-  
+
+
   function deleteHandler(e){
     try {
       e.preventDefault();
@@ -122,27 +127,28 @@ import { useEffect } from 'react';
   function searchHandler(e){
     try{
       e.preventDefault();
-      let found = false; // Add this line
+      let found = false;
+     
+      const currentSearchValue = searchValue; // Save the current search value
       vocabList.map((key) => {
-      if (key.word === searchValue) {
-        console.log(key['解释']);
-        found = true;
-        setSearchMeaning(key['解释'])    
-        }
 
-        setSearchValue('');
-    })
-    if (!found) {
-      alert('没有找到这个单词');
-     }
-  }
-  catch (error) {
-    console.error('Error:', error);
-  }
+        if (key.word === currentSearchValue) { // Use the current search value
+          found = true;
+          setSearchMeaning(key['解释'])    
+        }
+      })
+      console.log('Value of found:', found);
+      if (!found) {
+        alert('Oops😬, 没有找到这个单词,请检查拼写错误');
+      }
+      setSearchValue("");        
+    }
+    catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   function handleWordClick(word,word2S) {
-    
     !searchedWords&&setSubmited({word: word,sentence: inputValue});
     console.log('clicked');
     !searchedWords&&(word2S.style.color = 'red'); 
@@ -154,35 +160,27 @@ import { useEffect } from 'react';
 
 
   return (
+
   <Context.Provider value={{addHandler, deleteHandler,searchHandler,
-  filled,inputValue,submited,setSubmited}}>
+  inputValue,submited,setSubmited}}>
     <div className='container'>
-    <button onClick={() => localStorage.clear()}>
+
+    <button onClick={() => {localStorage.clear();window.location.reload();}}>
     重新加载
-      </button>
+    </button>
    
     {!isCollapsed && <div className='word-list'> {
-      
-      vocabList.map((key, index) => {
-            return (
-              <ul key={index}>
-                {Object.entries(key).map(([key, value], index) => {
-                  if (key !== 'word') {
-                    return <li key={index}>{`${key}: ${value}`}</li>;
-                  }
-                })}
-              </ul>
-            );
-          })
-          }  
+      <Card vocabList={vocabList} />
+               
+         }
 
         <div className='inputing'>
           <Dived str={inputValue} onWordClick={handleWordClick} />
         </div>
     </div>
     }
-     {isCollapsed && <div className='word-list no-column-flex'> {
-      
+     {isCollapsed && <div className=''> {
+        
       vocabList.map((key, index) => {
         
             return (
@@ -199,27 +197,26 @@ import { useEffect } from 'react';
         <Dived str={inputValue} onWordClick={handleWordClick} />
         </div>
     </div>
-    }
-  
+    }    {normalResponse ? <Load /> : null}
+
     <div className='searchBar'>
     <form className="wordAndSentence"onSubmit={e=>{addHandler(e,submited)}}>
-    <InputWithButton handler={deleteHandler} value={inputValue}  type="text"  onChange={
+    <InputWithButton  filled={filled0} handler={deleteHandler} value={inputValue}  type="text"  onChange={
       (e) =>{
        setInputValue(e.target.value);
-       setFilled(e.target.value.length == 0);
+       setFilled0(e.target.value.length == 0);      
     }
     } />
     </form>
-    <form className="searchWord"onSubmit={(e)=>searchHandler(e)}>
-      <Input placeholder='查找生词本的单词' value={searchValue}  type="text" onChange={
+
+    <form className="searchWord" onSubmit={(e)=>searchHandler(e)}>
+      <InputWithButton filled={filled1} handler={()=>{setSearchMeaning("")}} placeholder='查找生词本的单词' value={searchValue}  type="text" onChange={
       (e) =>{
        setSearchValue(e.target.value);
-    }
-    }  
+       setFilled1(e.target.value.length == 0);     
+      } 
+      }  
     />
-        <Button  event='🔍'  />
-        <Button  event='🧹' handler={()=>{setSearchMeaning('')}} />
-
     </form>
 
     </div>
@@ -232,6 +229,7 @@ import { useEffect } from 'react';
   }} 
 /> 
 <p>{searchMeaning}</p>
+
  <div className='footer'>© 2024 Kitty Bob. All rights reserved.</div>
     
    </div> 

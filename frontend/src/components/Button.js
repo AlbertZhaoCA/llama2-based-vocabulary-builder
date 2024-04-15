@@ -6,16 +6,11 @@ export function Button({event,styles,handler}){
     return <button onClick={handler} style={{...styles}}>{event}  </button>
 }
 
-export function DoubleButton({event0,event1,handler}){
-
-    const {filled} = useContext(Context);
-   
-
+export function DoubleButton({event0, event1, handler, filled}) {
     return(
-    <div >
-        <button type='submit' disabled={filled} >{event0}</button>
-        <button  onClick={handler} type='button' >{event1}</button>
-    </div> );
-    
-    
+        <div>
+            <button type='submit' disabled={filled}>{event0}</button>
+            <button onClick={handler} type='button'>{event1}</button>
+        </div>
+    );
 }
