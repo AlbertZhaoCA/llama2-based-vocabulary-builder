@@ -11,20 +11,22 @@ import { useEffect } from 'react';
     
 
     let initial ={
-      'word': 'example',
-      '单词': ' example /ɪg\'zæmpl/',
-      '解释': '这是一个小小的🌰,希望你查到最合适的解释',
-      '背景': 'For 👉example(在回显区点击你要查的单词,我们会给你单词在语境里的意思,也可以直接查询句子，但这样你不能在生词本里进行查找), if you give us the context, we will show you here',
+      'word': 'welcome',
+      '单词': ' Welcom 欢迎 Salut いらっしゃいませ',
+      '解释': '这句话使用了四种语言表达欢迎, 意思是欢迎或者欢迎光临。它用来表示对某人或某事的热烈欢迎或接纳。在酒店、商店、活动等场合，用来表示欢迎客人或参与者。',
+      '背景': 'For, example👉welcom 欢迎 Salut いらっしゃいませ(在回显区点击你要查的单词,我们会给你单词在语境里的意思), if you give us the context, we will show you here',
       }
 
   const [vocabList,setVocabList] = useState(JSON.parse(localStorage.getItem('vocabList')) || [initial]);
   const [inputValue,setInputValue] = useState('');
   const [filled,setFilled] = useState(true);
-  const [searchValue,setSearchValue] = useState('');
-  const [searchMeaning,setSearchMeaning] = useState('');
-  const [isCollapsed,setIsCollapsed] = useState(JSON.parse(localStorage.getItem('isCollapsed')) || false);
+  const [searchValue,setSearchValue] = useState('');//for searching added words in word list
+  const [searchMeaning,setSearchMeaning] = useState('');//for showing the meaning of the searched word
+  const [isCollapsed,setIsCollapsed] = useState(JSON.parse(localStorage.getItem('isCollapsed')) || false);//fold the word list
   const [isClicked,setIsClicked] = useState(false);
-  const [submited,setSubmited] = useState({});
+  const [submited,setSubmited] = useState({});//the word that will be added to the word list
+  const [normalResponse,setNormalResponse] = useState(false);//the response from the server
+  const [searchedWords,setsearchedWords] = useState(false);//the word that will be highlighted in the word list
   
   useEffect(() => {
     localStorage.setItem('vocabList', JSON.stringify(vocabList));
@@ -57,6 +59,7 @@ import { useEffect } from 'react';
         },
         body: JSON.stringify(data),
       }).then(response => {
+        setNormalResponse(true);
         const reader = response.body.getReader();
         return new ReadableStream({
           start(controller) {
@@ -82,24 +85,27 @@ import { useEffect } from 'react';
         });
       })
       .then(stream => {
-        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+        setNormalResponse(false);
       })
       .then(result => {
         console.log(result);
       })
       .catch((error) => {
         console.error('Error:', error);
+        error.message.includes('NetworkError')
+        &&alert('Oops, 服务器走神了，请稍后再试');
       });
    
     }catch(error){
       console.error('Error:', error);
+      error.message.includes('NetworkError')&&
+      alert('Oops, 网络好像有点不太正常，请稍后再试');
     }
   }
   
   function deleteHandler(e){
     try {
       e.preventDefault();
-
     if (inputValue) {
       console.log(vocabList.filter(para => para.word !== inputValue))
       setVocabList(vocabList.filter(para => para.word !== inputValue));
@@ -116,30 +122,44 @@ import { useEffect } from 'react';
   function searchHandler(e){
     try{
       e.preventDefault();
-
-    vocabList.map((key) => {
+      let found = false; // Add this line
+      vocabList.map((key) => {
       if (key.word === searchValue) {
         console.log(key['解释']);
+        found = true;
         setSearchMeaning(key['解释'])    
         }
+
         setSearchValue('');
     })
+    if (!found) {
+      alert('没有找到这个单词');
+     }
   }
   catch (error) {
     console.error('Error:', error);
   }
   }
 
-  function handleWordClick(word) {
-    setSubmited({word: word,sentence: inputValue});
+  function handleWordClick(word,word2S) {
+    
+    !searchedWords&&setSubmited({word: word,sentence: inputValue});
     console.log('clicked');
-}
+    !searchedWords&&(word2S.style.color = 'red'); 
+    !searchedWords&&(word2S.style.backgroundColor = 'yellow');
+     setsearchedWords(!searchedWords);
+     searchedWords&&(word2S.style.color = 'inherit'); 
+     searchedWords&&(word2S.style.backgroundColor = 'inherit'); 
+  }
 
 
   return (
   <Context.Provider value={{addHandler, deleteHandler,searchHandler,
   filled,inputValue,submited,setSubmited}}>
     <div className='container'>
+    <button onClick={() => localStorage.clear()}>
+    重新加载
+      </button>
    
     {!isCollapsed && <div className='word-list'> {
       
@@ -180,7 +200,7 @@ import { useEffect } from 'react';
         </div>
     </div>
     }
-   
+  
     <div className='searchBar'>
     <form className="wordAndSentence"onSubmit={e=>{addHandler(e,submited)}}>
     <InputWithButton handler={deleteHandler} value={inputValue}  type="text"  onChange={

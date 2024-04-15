@@ -1,5 +1,11 @@
 {
   "devDependencies": {
+    "eslint-plugin-jest": "^28.2.0",
     "gh-pages": "^6.1.1"
+  }, "eslintConfig": {
+    "plugins": ["jest"],
+    "env": {
+      "jest/globals": true
+    }
   }
 }

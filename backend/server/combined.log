@@ -1,0 +1,4 @@
+{"level":"info","message":"Server started at Mon Apr 15 2024 00:31:19 GMT+0800 (China Standard Time)","service":"user-service"}
+{"level":"info","message":"Server started at Mon Apr 15 2024 00:41:12 GMT+0800 (China Standard Time)","service":"user-service"}
+{"level":"info","message":"test user make a request: [object Object] at Mon Apr 15 2024 00:41:54 GMT+0800 (China Standard Time)","service":"user-service"}
+{"level":"info","message":"test user make a request: [object Object] at Mon Apr 15 2024 00:42:23 GMT+0800 (China Standard Time)","service":"user-service"}
